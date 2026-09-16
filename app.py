@@ -3,7 +3,7 @@ import streamlit as st
 # 페이지 설정
 st.set_page_config(page_title="진로부스 상점", page_icon="🎯")
 
-st.title("🎯 진로부스 상점")
+st.title("진로부스 상점")
 st.write("진로부스 체험을 통해 얻은 코인으로 다양한 상품을 구매해 보세요!")
 
 # 1. 세션 상태 초기화 (소지금, 인벤토리)
