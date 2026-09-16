@@ -1,50 +1,31 @@
-from flask import Flask, jsonify, render_template, request
+import streamlit as st
 
-app = Flask(__name__)
+st.set_page_config(page_title="나만의 상점 메뉴판", page_icon="🛒")
 
-# 전역 변수로 소지금 관리 (초기값 10,000원)
-user_data = {"balance": 10000}
+st.title("🛒 나만의 상점 메뉴판")
 
-# 나중에 알려주실 상품 목록을 담을 공간 (예시로 비워둡니다)
-# 예: [{"id": 1, "name": "아메리카노", "price": 4000}]
-products = []
+# 세션 상태를 이용해 소지금과 구매 내역 관리 (새로고침해도 유지)
+if "balance" not in st.session_state:
+    st.session_state.balance = 10000
 
+if "inventory" not in st.session_state:
+    st.session_state.inventory = []
 
-@app.route("/")
-def index():
-    return render_template(
-        "index.html", balance=user_data["balance"], products=products
-    )
+# 1. 소지금 설정 영역
+st.header("보유 자산")
+st.write(f"현재 소지금: **{st.session_state.balance:,}원**")
 
+new_balance = st.number_input("소지금 설정", min_value=0, value=st.session_state.balance, step=1000)
+if st.button("소지금 변경 적용"):
+    st.session_state.balance = new_balance
+    st.success(f"소지금이 {new_balance:,}원으로 설정되었습니다!")
+    st.rerun()
 
-# 소지금 설정 API
-@app.route("/set_balance", methods=["POST"])
-def set_balance():
-    data = request.get_json()
-    new_balance = int(data.get("balance", 0))
+st.divider()
 
-    if new_balance < 0:
-        return jsonify(
-            {"success": False, "message": "금액은 0 이상이어야 합니다."}
-        )
+# 2. 상품 목록 영역 (나중에 상품을 채워넣을 공간)
+st.header("상품 목록")
+st.info("상품과 가격을 알려주시면 이곳에 구매 버튼이 생성됩니다!")
 
-    user_data["balance"] = new_balance
-    return jsonify(
-        {
-            "success": True,
-            "balance": user_data["balance"],
-            "message": f"소지금이 {new_balance:,}원으로 설정되었습니다.",
-        }
-    )
-
-
-# 상품 구매 API (나중에 상품이 생기면 작동합니다)
-@app.route("/buy/<int:product_id>", methods=["POST"])
-def buy_product(product_id):
-    # 상품 찾기 로직 (추후 상품 데이터 구조에 맞춰 완성될 예정)
-    # 현재는 틀만 잡아둡니다.
-    return jsonify({"success": False, "message": "아직 상품이 등록되지 않았습니다."})
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
+# (참고용 예시 상품 구조)
+# products = [{"name": "아메리카노", "price": 4000}]
