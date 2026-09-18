@@ -17,7 +17,7 @@ if "inventory" not in st.session_state:
 # ==========================================
 # [1단계] 부스 시작 전: 초기 소지금 및 상품별 개수(재고) 설정 화면
 # ==========================================
-if not st.setup_done:
+if not st.session_state.setup_done:
     st.title("⚙️ 진로부스 상점 세팅 페이지")
     st.write("참가자의 **초기 소지금**과 각 **상품별 개수(재고)**를 설정한 뒤 상점을 열어주세요.")
 
@@ -56,7 +56,6 @@ if not st.setup_done:
         with col2:
             st.markdown(f"💰 {prod['price']} 코인")
         with col3:
-            # 개수(재고)를 직접 설정
             new_stock = st.number_input(
                 f"{prod['name']} 개수", 
                 min_value=0, 
