@@ -15,68 +15,70 @@ if "inventory" not in st.session_state:
     st.session_state.inventory = []
 
 # ==========================================
-# [1단계] 부스 시작 전: 상품 및 초기 소지금 설정 화면
+# [1단계] 부스 시작 전: 초기 소지금 및 상품별 개수(재고) 설정 화면
 # ==========================================
-if not st.session_state.setup_done:
+if not st.setup_done:
     st.title("⚙️ 진로부스 상점 세팅 페이지")
-    st.write("부스를 시작하기 전에 참가자 초기 소지금과 **판매할 여러 개의 상품**을 등록해 주세요.")
+    st.write("참가자의 **초기 소지금**과 각 **상품별 개수(재고)**를 설정한 뒤 상점을 열어주세요.")
 
-    # 초기 소지금 설정
+    # 1. 초기 소지금 설정
     initial_coin = st.number_input("참가자 초기 소지금 (코인)", min_value=0, value=100, step=10)
 
     st.divider()
 
-    st.subheader("🛍️ 여러 개의 상품 등록하기")
-    st.write("상품명, 가격, 개수를 입력하고 **'상품 추가'**를 누르면 아래 리스트에 계속해서 추가됩니다.")
+    st.subheader("📦 상품별 초기 개수(재고) 설정")
+    st.write("알려주신 기본 상품들의 가격과 함께 준비된 수량을 입력해 주세요.")
 
-    # 상품 입력 폼 (폼 내부에 고유 키값 부여)
-    with st.form("multi_product_form", clear_on_submit=True):
-        col1, col2, col3 = st.columns(3)
+    # 기본 상품 템플릿 데이터 (이름, 가격)
+    default_items = [
+        {"name": "버터", "price": 12},
+        {"name": "강아지 키링", "price": 20},
+        {"name": "주사위 키링", "price": 20},
+        {"name": "키캡 (정상)", "price": 25},
+        {"name": "키캡 (비정상)", "price": 12},
+        {"name": "퉁퉁퉁 사후르", "price": 28},
+        {"name": "고오급볼펜", "price": 35},
+        {"name": "???", "price": 70}
+    ]
+
+    # 세션에 상품 리스트가 아직 없다면 기본 상품들을 불러와 초기화
+    if not st.session_state.products:
+        st.session_state.products = [
+            {"name": item["name"], "price": item["price"], "stock": 10} for item in default_items
+        ]
+
+    # 각 상품별 재고 수량을 조절할 수 있는 입력 필드 생성
+    updated_products = []
+    for idx, prod in enumerate(st.session_state.products):
+        col1, col2, col3 = st.columns([3, 2, 2])
         with col1:
-            p_name = st.text_input("상품명 (예: 볼펜, 키링, 간식 등)")
+            st.markdown(f"**{prod['name']}**")
         with col2:
-            p_price = st.number_input("상품 가격 (코인)", min_value=0, value=10, step=1)
+            st.markdown(f"💰 {prod['price']} 코인")
         with col3:
-            p_stock = st.number_input("상품 개수 (재고)", min_value=1, value=10, step=1)
+            # 개수(재고)를 직접 설정
+            new_stock = st.number_input(
+                f"{prod['name']} 개수", 
+                min_value=0, 
+                value=prod['stock'], 
+                step=1, 
+                key=f"stock_input_{idx}",
+                label_visibility="collapsed"
+            )
         
-        submitted = st.form_submit_button("➕ 상품 추가하기")
-        if submitted:
-            if p_name.strip() == "":
-                st.warning("상품명을 올바르게 입력해주세요!")
-            else:
-                st.session_state.products.append({
-                    "name": p_name,
-                    "price": p_price,
-                    "stock": p_stock
-                })
-                st.success(f"'{p_name}'이(가) 리스트에 추가되었습니다!")
-
-    # 현재 추가된 상품 목록 리스트 확인 및 삭제 기능
-    st.divider()
-    st.markdown(f"### 📋 등록된 상품 리스트 (총 {len(st.session_state.products)}개)")
-    
-    if st.session_state.products:
-        for idx, prod in enumerate(st.session_state.products):
-            col_a, col_b, col_c, col_d = st.columns([3, 2, 2, 1])
-            col_a.write(f"**{idx+1}. {prod['name']}**")
-            col_b.write(f"가격: {prod['price']} 코인")
-            col_c.write(f"재고: {prod['stock']} 개")
-            if col_d.button("삭제", key=f"del_prod_{idx}"):
-                st.session_state.products.pop(idx)
-                st.rerun()
-    else:
-        st.info("아직 추가된 상품이 없습니다. 위에서 상품을 추가해 보세요.")
-
-    st.divider()
+        updated_products.append({
+            "name": prod['name'],
+            "price": prod['price'],
+            "stock": new_stock
+        })
+        st.divider()
 
     # 상점 오픈 버튼
     if st.button("🚀 상점 오픈하기!", type="primary", use_container_width=True):
-        if not st.session_state.products:
-            st.error("최소 1개 이상의 상품을 등록해야 상점을 오픈할 수 있습니다!")
-        else:
-            st.session_state.coin_balance = initial_coin
-            st.session_state.setup_done = True
-            st.rerun()
+        st.session_state.coin_balance = initial_coin
+        st.session_state.products = updated_products
+        st.session_state.setup_done = True
+        st.rerun()
 
 # ==========================================
 # [2단계] 상점 오픈 후: 실제 구매 및 이용 화면
@@ -106,7 +108,7 @@ else:
 
     st.header("🛍️ 상품 목록")
     
-    # 여러 개 등록된 상품들을 순회하며 화면에 출력
+    # 설정된 상품들을 순회하며 화면에 출력
     for idx, prod in enumerate(st.session_state.products):
         col1, col2, col3, col4 = st.columns([3, 2, 2, 2])
         
