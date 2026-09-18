@@ -27,9 +27,9 @@ if not st.session_state.setup_done:
     st.divider()
 
     st.subheader("📦 상품별 초기 개수(재고) 설정")
-    st.write("알려주신 기본 상품들의 가격과 함께 준비된 수량을 입력해 주세요.")
+    st.write("상품들의 가격과 함께 준비된 수량을 입력해 주세요.")
 
-    # 기본 상품 템플릿 데이터 (이름, 가격)
+    # 기본 상품 템플릿 데이터 (이름, 가격) - 젤리 항목 추가 완료!
     default_items = [
         {"name": "버터", "price": 12},
         {"name": "강아지 키링", "price": 20},
@@ -38,6 +38,8 @@ if not st.session_state.setup_done:
         {"name": "키캡 (비정상)", "price": 12},
         {"name": "퉁퉁퉁 사후르", "price": 28},
         {"name": "고오급볼펜", "price": 35},
+        {"name": "과일젤리", "price": 3},
+        {"name": "스키틀즈", "price": 3},
         {"name": "???", "price": 70}
     ]
 
@@ -142,3 +144,4 @@ else:
             st.write(f"- **{item_name}** : {count}개")
     else:
         st.write("아직 구매한 상품이 없습니다.")
+    
