@@ -33,7 +33,7 @@ if not st.session_state.setup_done:
     default_items = [
         {"name": "볼펜", "price": 6},
         {"name": "스티커", "price": 8},
-        {"name": "데스노트", "price": 20},
+        {"name": "데스노트", "price": 15},
         {"name": "도지코인", "price": 30},
         {"name": "우사기", "price": 35},
         {"name": "몽셸", "price": 6},
