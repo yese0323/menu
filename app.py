@@ -32,14 +32,14 @@ if not st.session_state.setup_done:
     # 기본 상품 템플릿 데이터 (이름, 가격) - 젤리 항목 추가 완료!
     default_items = [
         {"name": "볼펜", "price": 6},
-        {"name": "스티커", "price": 8},
-        {"name": "데스노트", "price": 15},
+        {"name": "스티커", "price": 5},
+        {"name": "데스노트", "price": 18},
         {"name": "도지코인", "price": 30},
-        {"name": "우사기", "price": 45},
-        {"name": "몽셸", "price": 6},
-        {"name": "초코킥", "price": 5},
-        {"name": "샤프", "price": 35},
-        {"name": "키링", "price": 15},
+        {"name": "우사기", "price": 40},
+        {"name": "몽셸", "price": 4},
+        {"name": "초코킥", "price": 4},
+        {"name": "샤프", "price": 30},
+        {"name": "키링", "price": 10},
         {"name": "???", "price": 70}
     ]
 
