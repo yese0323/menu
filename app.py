@@ -36,8 +36,8 @@ if not st.session_state.setup_done:
         {"name": "데스노트", "price": 18},
         {"name": "도지코인", "price": 30},
         {"name": "우사기", "price": 40},
-        {"name": "몽셸", "price": 4},
-        {"name": "초코킥", "price": 4},
+        {"name": "몽셸", "price": 2},
+        {"name": "초코킥", "price": 2},
         {"name": "샤프", "price": 30},
         {"name": "키링", "price": 10},
         {"name": "???", "price": 70}
